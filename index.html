@@ -1,1 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Book Your Celebration Now | Kulzzy Radio Network</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #071a3d;
+    color: #ffffff;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffd700;
+    text-transform: uppercase;
+}
+
+.header p {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.form-box {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px;
+    color: #111111;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+
+.section-title {
+    margin: 0 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ffd700;
+    color: #071a3d;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.field {
+    margin-bottom: 17px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #071a3d;
+}
+
+select,
+input,
+textarea {
+    width: 100%;
+    border: 1px solid #cfcfcf;
+    border-radius: 10px;
+    padding: 13px 12px;
+    font-size: 15px;
+    outline: none;
+    background: #ffffff;
+    color: #111111;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+    border-color: #071a3d;
+    box-shadow: 0 0 0 2px rgba(7,26,61,0.08);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.required {
+    color: red;
+}
+
+.hidden {
+    display: none;
+}
+
+.service-box {
+    border: 2px solid #e1e1e1;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.service-box:hover {
+    border-color: #ffd700;
+}
+
+.service-box.active {
+    border-color: #071a3d;
+    background: #f5f8ff;
+}
+
+.service-title {
+    font-weight: 800;
+    color: #071a3d;
+    font-size: 15px;
+}
+
+.service-description {
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #555555;
+}
+
+.price-display {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #071a3d;
+    color: #ffffff;
+    text-align: center;
+}
+
+.price-display span {
+    display: block;
+}
+
+.price-label {
+    font-size: 13px;
+}
+
+.price-value {
+    margin-top: 5px;
+    font-size: 25px;
+    font-weight: 800;
+    color: #ffd700;
+}
+
+.upload-note {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666666;
+}
+
+.payment-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #fff8d9;
+    border: 1px solid #ffd700;
+}
+
+.payment-box h3 {
+    margin: 0 0 8px;
+    color: #071a3d;
+    font-size: 16px;
+}
+
+.payment-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.submit-btn {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+    background: #071a3d;
+    color: #ffd700;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #0c2b63;
+}
+
+.footer-message {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #071a3d;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.footer-message strong {
+    color: #ffd700;
+}
+
+.success-message {
+    display: none;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    background: #e7f8e9;
+    color: #176b25;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+
+    body {
+        padding: 12px 8px;
+    }
+
+    .form-box {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .header h1 {
+        font-size: 23px;
+    }
+
+    select,
+    input,
+    textarea {
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>BOOK YOUR CELEBRATION NOW</h1>
+        <p>Kulzzy Radio Network — Celebrating Lives Everyday</p>
+    </div>
+
+    <div class="form-box">
+
+        <form id="celebrationForm">
+
+            <!-- WHO ARE YOU CELEBRATING -->
+            <div class="field">
+                <label for="relationship">
+                    Select Who You Are Celebrating <span class="required">*</span>
+                </label>
+
+                <select id="relationship" required>
+                    <option value="">Select relationship</option>
+                    <option>Daddy</option>
+                    <option>Mummy</option>
+                    <option>Brother</option>
+                    <option>Sister</option>
+                    <option>Child</option>
+                    <option>Husband</option>
+                    <option>Wife</option>
+                    <option>Boyfriend</option>
+                    <option>Girlfriend</option>
+                    <option>Others</option>
+                </select>
+            </div>
+
+
+            <!-- CATEGORY -->
+            <div class="field">
+                <label for="category">
+                    Select Celebration Category <span class="required">*</span>
+                </label>
+
+                <select id="category" required>
+                    <option value="">Select category</option>
+                    <option>Birthday Celebration</option>
+                    <option>Wedding Anniversary</option>
+                    <option>Child Dedication</option>
+                    <option>Achievements</option>
+                    <option>Graduation Celebration</option>
+                    <option>Others</option>
+                </select>
+            </div>
+
+
+            <!-- CELEBRATION TYPE -->
+            <div class="field">
+
+                <label>
+                    Select Celebration Type <span class="required">*</span>
+                </label>
+
+                <div
+                    class="service-box"
+                    id="announcementBox"
+                    onclick="selectService('announcement')"
+                >
+
+                    <div class="service-title">
+                        CELEBRATION ANNOUNCEMENT ONLY — ₦3,000
+                    </div>
+
+                    <div class="service-description">
+                        We are to talk about the celebrant live on-air
+                        without calling the celebrant.
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="service-box"
+                    id="interviewBox"
+                    onclick="selectService('interview')"
+                >
+
+                    <div class="service-title">
+                        CELEBRATION PHONE CALL INTERVIEW — ₦7,000
+                    </div>
+
+                    <div class="service-description">
+                        We are to call the celebrant live on-air as we
+                        announce about the celebrant.
+                    </div>
+
+                </div>
+
+                <input
+                    type="hidden"
+                    id="celebrationType"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CELEBRANT INFORMATION -->
+            <h2 class="section-title">
+                Celebrant Information
+            </h2>
+
+
+            <!-- TWO PICTURES -->
+            <div class="field">
+
+                <label for="pictures">
+                    Upload Celebrant's 2 Pictures
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="pictures"
+                    accept="image/*"
+                    multiple
+                    required
+                >
+
+                <div class="upload-note">
+                    Please select exactly 2 pictures.
+                </div>
+
+            </div>
+
+
+            <!-- CELEBRANT NAME -->
+            <div class="field">
+
+                <label for="celebrantName">
+                    Celebrant's Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="celebrantName"
+                    placeholder="Enter celebrant's full name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PHONE CALL FIELDS -->
+            <div id="interviewFields" class="hidden">
+
+                <div class="field">
+
+                    <label for="celebrantPhone">
+                        Celebrant's Active Number to Call
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="celebrantPhone"
+                        placeholder="Enter active phone number"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- SENDER NAME -->
+            <div class="field">
+
+                <label for="senderName">
+                    Your Name as the Sender
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="senderName"
+                    placeholder="Enter your name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- WHATSAPP NUMBER -->
+            <div id="whatsappField" class="field hidden">
+
+                <label for="whatsappNumber">
+                    Your WhatsApp Number
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    id="whatsappNumber"
+                    placeholder="Enter your WhatsApp number"
+                >
+
+            </div>
+
+
+            <!-- WRITE UP -->
+            <div class="field">
+
+                <label for="writeup">
+                    What Are You Wishing the Celebrant?
+                    <span class="required">*</span>
+                </label>
+
+                <textarea
+                    id="writeup"
+                    placeholder="Write your short celebration message here..."
+                    required
+                ></textarea>
+
+                <div class="upload-note">
+                    If you are celebrating yourself, write your own celebration message.
+                </div>
+
+            </div>
+
+
+            <!-- DATE -->
+            <h2 class="section-title">
+                Celebration Date
+            </h2>
+
+            <div class="field">
+
+                <label for="celebrationDate">
+                    Select Date
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="date"
+                    id="celebrationDate"
+                    required
+                >
+
+                <div class="upload-note">
+                    If the celebration is today, select today's date.
+                </div>
+
+            </div>
+
+
+            <!-- PRICE -->
+            <h2 class="section-title">
+                Payment
+            </h2>
+
+            <div class="price-display">
+
+                <span class="price-label">
+                    Selected Celebration Price
+                </span>
+
+                <span
+                    class="price-value"
+                    id="priceDisplay"
+                >
+                    Select celebration type
+                </span>
+
+            </div>
+
+
+            <!-- PAYMENT INFORMATION -->
+            <div class="payment-box">
+
+                <h3>Make Payment</h3>
+
+                <p id="paymentInstruction">
+                    Please select your celebration type above to see the amount to pay.
+                </p>
+
+                <p>
+                    After making payment, upload your payment receipt below.
+                </p>
+
+            </div>
+
+
+            <!-- RECEIPT -->
+            <div class="field" style="margin-top:18px;">
+
+                <label for="receipt">
+                    Upload Payment Receipt
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="receipt"
+                    accept="image/*,.pdf"
+                    required
+                >
+
+                <div class="upload-note">
+                    You can upload an image or PDF of your payment receipt.
+                </div>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                SUBMIT CELEBRATION REQUEST
+            </button>
+
+
+            <!-- SUCCESS -->
+            <div
+                class="success-message"
+                id="successMessage"
+            >
+                🎉 Your celebration request has been received successfully!
+                <br><br>
+                Our team will review your request.
+                <br><br>
+                Stay tuned to Kulzzy Radio Network.
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <div class="footer-message">
+
+        <strong>Stay Tuned!</strong><br>
+
+        You will get the audiovisual soon after your celebration
+        announcement.
+
+        <br><br>
+
+        <strong>Kulzzy Radio Network</strong><br>
+        Celebrating Lives Everyday
+
+    </div>
+
+</div>
+
+
+<script>
+
+const announcementBox =
+    document.getElementById("announcementBox");
+
+const interviewBox =
+    document.getElementById("interviewBox");
+
+const celebrationType =
+    document.getElementById("celebrationType");
+
+const interviewFields =
+    document.getElementById("interviewFields");
+
+const whatsappField =
+    document.getElementById("whatsappField");
+
+const celebrantPhone =
+    document.getElementById("celebrantPhone");
+
+const whatsappNumber =
+    document.getElementById("whatsappNumber");
+
+const priceDisplay =
+    document.getElementById("priceDisplay");
+
+const paymentInstruction =
+    document.getElementById("paymentInstruction");
+
+
+function selectService(type) {
+
+    announcementBox.classList.remove("active");
+    interviewBox.classList.remove("active");
+
+    if (type === "announcement") {
+
+        announcementBox.classList.add("active");
+
+        celebrationType.value =
+            "Celebration Announcement Only";
+
+        interviewFields.classList.add("hidden");
+        whatsappField.classList.add("hidden");
+
+        celebrantPhone.required = false;
+        whatsappNumber.required = false;
+
+        priceDisplay.textContent = "₦3,000";
+
+        paymentInstruction.innerHTML =
+            "<strong>Celebration Announcement Only — ₦3,000</strong><br>" +
+            "Please make payment of ₦3,000 and upload your receipt below.";
+
+    }
+
+
+    if (type === "interview") {
+
+        interviewBox.classList.add("active");
+
+        celebrationType.value =
+            "Celebration Phone Call Interview";
+
+        interviewFields.classList.remove("hidden");
+        whatsappField.classList.remove("hidden");
+
+        celebrantPhone.required = true;
+        whatsappNumber.required = true;
+
+        priceDisplay.textContent = "₦7,000";
+
+        paymentInstruction.innerHTML =
+            "<strong>Celebration Phone Call Interview — ₦7,000</strong><br>" +
+            "Please make payment of ₦7,000 and upload your receipt below.";
+
+    }
+
+}
+
+
+/* SET TODAY AS MINIMUM DATE */
+
+const dateInput =
+    document.getElementById("celebrationDate");
+
+const today =
+    new Date();
+
+const year =
+    today.getFullYear();
+
+const month =
+    String(today.getMonth() + 1).padStart(2, "0");
+
+const day =
+    String(today.getDate()).padStart(2, "0");
+
+const todayString =
+    `${year}-${month}-${day}`;
+
+dateInput.min = todayString;
+
+
+/* CHECK EXACTLY 2 PICTURES */
+
+const picturesInput =
+    document.getElementById("pictures");
+
+picturesInput.addEventListener("change", function() {
+
+    if (this.files.length !== 2) {
+
+        alert("Please select exactly 2 celebrant pictures.");
+
+        this.value = "";
+
+    }
+
+});
+
+
+/* FORM SUBMISSION */
+
+const form =
+    document.getElementById("celebrationForm");
+
+const successMessage =
+    document.getElementById("successMessage");
+
+
+form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    if (!celebrationType.value) {
+
+        alert("Please select a celebration type.");
+
+        return;
+
+    }
+
+
+    if (picturesInput.files.length !== 2) {
+
+        alert("Please upload exactly 2 celebrant pictures.");
+
+        return;
+
+    }
+
+
+    successMessage.style.display = "block";
+
+    successMessage.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+});
+
+
+</script>
+
+</body>
+</html>
