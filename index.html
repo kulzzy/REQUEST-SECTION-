@@ -204,6 +204,11 @@ textarea {
     background: #0c2b63;
 }
 
+.submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
 .footer-message {
     text-align: center;
     margin-top: 20px;
@@ -229,6 +234,23 @@ textarea {
     text-align: center;
     font-weight: 700;
     line-height: 1.5;
+}
+
+.error-message {
+    display: none;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    background: #ffe7e7;
+    color: #9b111e;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.payment-reference {
+    word-break: break-all;
+    font-size: 13px;
 }
 
 @media (max-width: 480px) {
@@ -270,12 +292,18 @@ textarea {
 
             <!-- WHO ARE YOU CELEBRATING -->
             <div class="field">
+
                 <label for="relationship">
-                    Select Who You Are Celebrating <span class="required">*</span>
+                    Select Who You Are Celebrating
+                    <span class="required">*</span>
                 </label>
 
                 <select id="relationship" required>
-                    <option value="">Select relationship</option>
+
+                    <option value="">
+                        Select relationship
+                    </option>
+
                     <option>Daddy</option>
                     <option>Mummy</option>
                     <option>Brother</option>
@@ -286,25 +314,35 @@ textarea {
                     <option>Boyfriend</option>
                     <option>Girlfriend</option>
                     <option>Others</option>
+
                 </select>
+
             </div>
 
 
             <!-- CATEGORY -->
             <div class="field">
+
                 <label for="category">
-                    Select Celebration Category <span class="required">*</span>
+                    Select Celebration Category
+                    <span class="required">*</span>
                 </label>
 
                 <select id="category" required>
-                    <option value="">Select category</option>
+
+                    <option value="">
+                        Select category
+                    </option>
+
                     <option>Birthday Celebration</option>
                     <option>Wedding Anniversary</option>
                     <option>Child Dedication</option>
                     <option>Achievements</option>
                     <option>Graduation Celebration</option>
                     <option>Others</option>
+
                 </select>
+
             </div>
 
 
@@ -312,7 +350,8 @@ textarea {
             <div class="field">
 
                 <label>
-                    Select Celebration Type <span class="required">*</span>
+                    Select Celebration Type
+                    <span class="required">*</span>
                 </label>
 
                 <div
@@ -350,6 +389,7 @@ textarea {
 
                 </div>
 
+
                 <input
                     type="hidden"
                     id="celebrationType"
@@ -369,8 +409,11 @@ textarea {
             <div class="field">
 
                 <label for="pictures">
+
                     Upload Celebrant's 2 Pictures
+
                     <span class="required">*</span>
+
                 </label>
 
                 <input
@@ -392,8 +435,11 @@ textarea {
             <div class="field">
 
                 <label for="celebrantName">
+
                     Celebrant's Name
+
                     <span class="required">*</span>
+
                 </label>
 
                 <input
@@ -407,13 +453,19 @@ textarea {
 
 
             <!-- PHONE CALL FIELDS -->
-            <div id="interviewFields" class="hidden">
+            <div
+                id="interviewFields"
+                class="hidden"
+            >
 
                 <div class="field">
 
                     <label for="celebrantPhone">
+
                         Celebrant's Active Number to Call
+
                         <span class="required">*</span>
+
                     </label>
 
                     <input
@@ -431,8 +483,11 @@ textarea {
             <div class="field">
 
                 <label for="senderName">
+
                     Your Name as the Sender
+
                     <span class="required">*</span>
+
                 </label>
 
                 <input
@@ -446,11 +501,17 @@ textarea {
 
 
             <!-- WHATSAPP NUMBER -->
-            <div id="whatsappField" class="field hidden">
+            <div
+                id="whatsappField"
+                class="field hidden"
+            >
 
                 <label for="whatsappNumber">
+
                     Your WhatsApp Number
+
                     <span class="required">*</span>
+
                 </label>
 
                 <input
@@ -462,12 +523,40 @@ textarea {
             </div>
 
 
+            <!-- EMAIL -->
+            <div class="field">
+
+                <label for="email">
+
+                    Your Email Address
+
+                    <span class="required">*</span>
+
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email address"
+                    required
+                >
+
+                <div class="upload-note">
+                    Your payment information will be connected to this email.
+                </div>
+
+            </div>
+
+
             <!-- WRITE UP -->
             <div class="field">
 
                 <label for="writeup">
+
                     What Are You Wishing the Celebrant?
+
                     <span class="required">*</span>
+
                 </label>
 
                 <textarea
@@ -477,7 +566,10 @@ textarea {
                 ></textarea>
 
                 <div class="upload-note">
-                    If you are celebrating yourself, write your own celebration message.
+
+                    If you are celebrating yourself,
+                    write your own celebration message.
+
                 </div>
 
             </div>
@@ -488,11 +580,15 @@ textarea {
                 Celebration Date
             </h2>
 
+
             <div class="field">
 
                 <label for="celebrationDate">
+
                     Select Date
+
                     <span class="required">*</span>
+
                 </label>
 
                 <input
@@ -502,7 +598,10 @@ textarea {
                 >
 
                 <div class="upload-note">
-                    If the celebration is today, select today's date.
+
+                    If the celebration is today,
+                    select today's date.
+
                 </div>
 
             </div>
@@ -513,17 +612,22 @@ textarea {
                 Payment
             </h2>
 
+
             <div class="price-display">
 
                 <span class="price-label">
+
                     Selected Celebration Price
+
                 </span>
 
                 <span
                     class="price-value"
                     id="priceDisplay"
                 >
+
                     Select celebration type
+
                 </span>
 
             </div>
@@ -532,36 +636,52 @@ textarea {
             <!-- PAYMENT INFORMATION -->
             <div class="payment-box">
 
-                <h3>Make Payment</h3>
+                <h3>
+                    Make Payment
+                </h3>
 
                 <p id="paymentInstruction">
-                    Please select your celebration type above to see the amount to pay.
+
+                    Please select your celebration type
+                    above to see the amount to pay.
+
                 </p>
 
                 <p>
-                    After making payment, upload your payment receipt below.
+
+                    After clicking the button below,
+                    Flutterwave secure payment will open.
+
                 </p>
 
             </div>
 
 
             <!-- RECEIPT -->
-            <div class="field" style="margin-top:18px;">
+            <div
+                class="field"
+                style="margin-top:18px;"
+            >
 
                 <label for="receipt">
+
                     Upload Payment Receipt
+
                     <span class="required">*</span>
+
                 </label>
 
                 <input
                     type="file"
                     id="receipt"
                     accept="image/*,.pdf"
-                    required
                 >
 
                 <div class="upload-note">
-                    You can upload an image or PDF of your payment receipt.
+
+                    Receipt upload will be connected to
+                    the request-storage system in the next step.
+
                 </div>
 
             </div>
@@ -571,8 +691,11 @@ textarea {
             <button
                 type="submit"
                 class="submit-btn"
+                id="submitButton"
             >
-                SUBMIT CELEBRATION REQUEST
+
+                CONTINUE TO PAYMENT
+
             </button>
 
 
@@ -581,12 +704,43 @@ textarea {
                 class="success-message"
                 id="successMessage"
             >
-                🎉 Your celebration request has been received successfully!
+
+                🎉 <strong>Payment Successful!</strong>
+
                 <br><br>
-                Our team will review your request.
+
+                Your payment has been successfully verified.
+
                 <br><br>
-                Stay tuned to Kulzzy Radio Network.
+
+                Transaction Reference:
+
+                <br>
+
+                <span
+                    class="payment-reference"
+                    id="paymentReference"
+                ></span>
+
+                <br><br>
+
+                Your celebration request will now proceed
+                to the next stage.
+
+                <br><br>
+
+                <strong>
+                    Kulzzy Radio Network
+                </strong>
+
             </div>
+
+
+            <!-- ERROR -->
+            <div
+                class="error-message"
+                id="errorMessage"
+            ></div>
 
         </form>
 
@@ -595,14 +749,19 @@ textarea {
 
     <div class="footer-message">
 
-        <strong>Stay Tuned!</strong><br>
+        <strong>Stay Tuned!</strong>
 
-        You will get the audiovisual soon after your celebration
-        announcement.
+        <br>
+
+        You will get the audiovisual soon after
+        your celebration announcement.
 
         <br><br>
 
-        <strong>Kulzzy Radio Network</strong><br>
+        <strong>Kulzzy Radio Network</strong>
+
+        <br>
+
         Celebrating Lives Everyday
 
     </div>
@@ -610,7 +769,15 @@ textarea {
 </div>
 
 
+<!-- FLUTTERWAVE -->
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+
 <script>
+
+/* =========================================
+   ELEMENTS
+========================================= */
 
 const announcementBox =
     document.getElementById("announcementBox");
@@ -639,11 +806,38 @@ const priceDisplay =
 const paymentInstruction =
     document.getElementById("paymentInstruction");
 
+const form =
+    document.getElementById("celebrationForm");
+
+const picturesInput =
+    document.getElementById("pictures");
+
+const dateInput =
+    document.getElementById("celebrationDate");
+
+const submitButton =
+    document.getElementById("submitButton");
+
+const successMessage =
+    document.getElementById("successMessage");
+
+const errorMessage =
+    document.getElementById("errorMessage");
+
+const paymentReference =
+    document.getElementById("paymentReference");
+
+
+/* =========================================
+   SELECT SERVICE
+========================================= */
 
 function selectService(type) {
 
     announcementBox.classList.remove("active");
+
     interviewBox.classList.remove("active");
+
 
     if (type === "announcement") {
 
@@ -653,16 +847,19 @@ function selectService(type) {
             "Celebration Announcement Only";
 
         interviewFields.classList.add("hidden");
+
         whatsappField.classList.add("hidden");
 
         celebrantPhone.required = false;
+
         whatsappNumber.required = false;
 
-        priceDisplay.textContent = "₦3,000";
+        priceDisplay.textContent =
+            "₦3,000";
 
         paymentInstruction.innerHTML =
             "<strong>Celebration Announcement Only — ₦3,000</strong><br>" +
-            "Please make payment of ₦3,000 and upload your receipt below.";
+            "You will be taken to secure Flutterwave payment.";
 
     }
 
@@ -675,26 +872,28 @@ function selectService(type) {
             "Celebration Phone Call Interview";
 
         interviewFields.classList.remove("hidden");
+
         whatsappField.classList.remove("hidden");
 
         celebrantPhone.required = true;
+
         whatsappNumber.required = true;
 
-        priceDisplay.textContent = "₦7,000";
+        priceDisplay.textContent =
+            "₦7,000";
 
         paymentInstruction.innerHTML =
             "<strong>Celebration Phone Call Interview — ₦7,000</strong><br>" +
-            "Please make payment of ₦7,000 and upload your receipt below.";
+            "You will be taken to secure Flutterwave payment.";
 
     }
 
 }
 
 
-/* SET TODAY AS MINIMUM DATE */
-
-const dateInput =
-    document.getElementById("celebrationDate");
+/* =========================================
+   TODAY'S DATE
+========================================= */
 
 const today =
     new Date();
@@ -711,67 +910,433 @@ const day =
 const todayString =
     `${year}-${month}-${day}`;
 
-dateInput.min = todayString;
+dateInput.min =
+    todayString;
 
 
-/* CHECK EXACTLY 2 PICTURES */
+/* =========================================
+   EXACTLY 2 PICTURES
+========================================= */
 
-const picturesInput =
-    document.getElementById("pictures");
+picturesInput.addEventListener(
+    "change",
+    function() {
 
-picturesInput.addEventListener("change", function() {
+        if (this.files.length !== 2) {
 
-    if (this.files.length !== 2) {
+            alert(
+                "Please select exactly 2 celebrant pictures."
+            );
 
-        alert("Please select exactly 2 celebrant pictures.");
+            this.value = "";
 
-        this.value = "";
-
-    }
-
-});
-
-
-/* FORM SUBMISSION */
-
-const form =
-    document.getElementById("celebrationForm");
-
-const successMessage =
-    document.getElementById("successMessage");
-
-
-form.addEventListener("submit", function(event) {
-
-    event.preventDefault();
-
-    if (!celebrationType.value) {
-
-        alert("Please select a celebration type.");
-
-        return;
+        }
 
     }
+);
 
 
-    if (picturesInput.files.length !== 2) {
+/* =========================================
+   ERROR DISPLAY
+========================================= */
 
-        alert("Please upload exactly 2 celebrant pictures.");
+function showError(message) {
 
-        return;
+    errorMessage.textContent =
+        message;
 
-    }
+    errorMessage.style.display =
+        "block";
 
-
-    successMessage.style.display = "block";
-
-    successMessage.scrollIntoView({
+    errorMessage.scrollIntoView({
         behavior: "smooth",
         block: "center"
     });
 
-});
+}
 
+
+/* =========================================
+   HIDE ERROR
+========================================= */
+
+function hideError() {
+
+    errorMessage.style.display =
+        "none";
+
+    errorMessage.textContent =
+        "";
+
+}
+
+
+/* =========================================
+   FORM SUBMISSION
+========================================= */
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        hideError();
+
+
+        /* SERVICE */
+
+        if (!celebrationType.value) {
+
+            showError(
+                "Please select your celebration type."
+            );
+
+            return;
+
+        }
+
+
+        /* PICTURES */
+
+        if (picturesInput.files.length !== 2) {
+
+            showError(
+                "Please upload exactly 2 celebrant pictures."
+            );
+
+            return;
+
+        }
+
+
+        /* FORM DATA */
+
+        const relationship =
+            document.getElementById(
+                "relationship"
+            ).value;
+
+        const category =
+            document.getElementById(
+                "category"
+            ).value;
+
+        const celebrantName =
+            document.getElementById(
+                "celebrantName"
+            ).value.trim();
+
+        const celebrantPhoneValue =
+            celebrantPhone.value.trim();
+
+        const senderName =
+            document.getElementById(
+                "senderName"
+            ).value.trim();
+
+        const whatsappNumberValue =
+            whatsappNumber.value.trim();
+
+        const email =
+            document.getElementById(
+                "email"
+            ).value.trim();
+
+        const writeup =
+            document.getElementById(
+                "writeup"
+            ).value.trim();
+
+        const celebrationDate =
+            document.getElementById(
+                "celebrationDate"
+            ).value;
+
+
+        /* BUTTON */
+
+        submitButton.disabled =
+            true;
+
+        submitButton.textContent =
+            "CREATING SECURE PAYMENT...";
+
+
+        try {
+
+            /*
+             * SEND PAYMENT REQUEST TO NETLIFY
+             *
+             * The amount is NOT sent from the browser.
+             *
+             * The server decides:
+             *
+             * Announcement = ₦3,000
+             * Interview = ₦7,000
+             */
+
+            const response =
+                await fetch(
+                    "/.netlify/functions/create-payment",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            service:
+                                celebrationType.value,
+
+                            relationship:
+                                relationship,
+
+                            category:
+                                category,
+
+                            celebrantName:
+                                celebrantName,
+
+                            celebrantPhone:
+                                celebrantPhoneValue,
+
+                            senderName:
+                                senderName,
+
+                            whatsappNumber:
+                                whatsappNumberValue,
+
+                            email:
+                                email,
+
+                            writeup:
+                                writeup,
+
+                            celebrationDate:
+                                celebrationDate
+
+                        })
+
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Unable to create payment."
+                );
+
+            }
+
+
+            /* OPEN FLUTTERWAVE */
+
+            submitButton.textContent =
+                "OPENING FLUTTERWAVE...";
+
+
+            FlutterwaveCheckout({
+
+                public_key:
+                    result.publicKey,
+
+                tx_ref:
+                    result.tx_ref,
+
+                amount:
+                    result.amount,
+
+                currency:
+                    "NGN",
+
+                payment_options:
+                    "card,banktransfer,ussd",
+
+                customer: {
+
+                    email:
+                        email,
+
+                    phone_number:
+                        celebrantPhoneValue ||
+                        whatsappNumberValue,
+
+                    name:
+                        senderName
+
+                },
+
+                customizations: {
+
+                    title:
+                        "Kulzzy Radio Network",
+
+                    description:
+                        celebrationType.value,
+
+                    logo:
+                        "https://kulzzy.github.io/app/icon-192.png"
+
+                },
+
+
+                callback:
+                    async function(payment) {
+
+                        submitButton.textContent =
+                            "VERIFYING PAYMENT...";
+
+
+                        try {
+
+                            /*
+                             * SEND TRANSACTION TO
+                             * SECURE VERIFICATION FUNCTION
+                             */
+
+                            const verifyResponse =
+                                await fetch(
+                                    "/.netlify/functions/verify-payment",
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body: JSON.stringify({
+
+                                            transaction_id:
+                                                payment.transaction_id,
+
+                                            tx_ref:
+                                                result.tx_ref,
+
+                                            service:
+                                                celebrationType.value
+
+                                        })
+
+                                    }
+                                );
+
+
+                            const verifyResult =
+                                await verifyResponse.json();
+
+
+                            if (
+                                !verifyResponse.ok ||
+                                !verifyResult.success
+                            ) {
+
+                                throw new Error(
+                                    verifyResult.message ||
+                                    "Payment verification failed."
+                                );
+
+                            }
+
+
+                            /*
+                             * PAYMENT VERIFIED
+                             */
+
+                            paymentReference.textContent =
+                                result.tx_ref;
+
+                            successMessage.style.display =
+                                "block";
+
+                            submitButton.disabled =
+                                true;
+
+                            submitButton.textContent =
+                                "PAYMENT VERIFIED";
+
+                            successMessage.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center"
+                            });
+
+                        }
+
+
+                        catch(error) {
+
+                            console.error(
+                                "Verification error:",
+                                error
+                            );
+
+                            showError(
+                                error.message ||
+                                "Payment verification failed."
+                            );
+
+                            submitButton.disabled =
+                                false;
+
+                            submitButton.textContent =
+                                "CONTINUE TO PAYMENT";
+
+                        }
+
+                    },
+
+
+                onclose:
+                    function() {
+
+                        submitButton.disabled =
+                            false;
+
+                        submitButton.textContent =
+                            "CONTINUE TO PAYMENT";
+
+                    }
+
+            });
+
+        }
+
+
+        catch(error) {
+
+            console.error(
+                "Payment creation error:",
+                error
+            );
+
+            showError(
+                error.message ||
+                "Unable to create payment. Please try again."
+            );
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                "CONTINUE TO PAYMENT";
+
+        }
+
+    }
+);
 
 </script>
 
