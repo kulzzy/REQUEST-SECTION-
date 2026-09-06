@@ -1,8 +1,8 @@
 {
-"name": "kulzzy-request-section",
-"version": "1.0.0",
-"private": true,
-"dependencies": {
-"@netlify/blobs": "^10.0.0"
-}
+  "name": "kulzzy-request-section",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^10.0.0"
+  }
 }
