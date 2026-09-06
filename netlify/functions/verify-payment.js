@@ -1,409 +1,306 @@
-import { getStore } from "@netlify/blobs";
+const { getStore } = require("@netlify/blobs");
 
-export default async (req) => {
-  // Only allow POST requests
-  if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({
+const ALLOWED_ORIGIN = "https://donshangti2.github.io";
+
+const headers = {
+  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Content-Type": "application/json"
+};
+
+const PRICES = {
+  "Celebration Announcement Only": 3000,
+  "Celebration Phone Call Interview": 7000
+};
+
+exports.handler = async (event) => {
+  // Allow browser CORS preflight request
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers,
+      body: ""
+    };
+  }
+
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({
         success: false,
         message: "Method not allowed"
-      }),
-      {
-        status: 405,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+      })
+    };
   }
 
   try {
-    // Get Flutterwave secret key from Netlify environment variables
-    const secretKey = process.env.FLW_SECRET_KEY;
-
-    if (!secretKey) {
-      return new Response(
-        JSON.stringify({
+    if (!process.env.FLW_SECRET_KEY) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Flutterwave secret key is not configured."
-        }),
-        {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Flutterwave secret key is not configured"
+        })
+      };
     }
 
-    // Read payment information from the website
-    const body = await req.json();
+    let data;
 
-    const transactionId = body.transaction_id;
-    const txRef = body.tx_ref;
-    const service = body.service;
-
-    // Validate required payment information
-    if (!transactionId || !txRef || !service) {
-      return new Response(
-        JSON.stringify({
+    try {
+      data = JSON.parse(event.body || "{}");
+    } catch (error) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Missing payment verification information."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Invalid request data"
+        })
+      };
     }
 
-    // Allowed services and their official prices
-    const servicePrices = {
-      "Celebration Announcement Only": 3000,
-      "Celebration Phone Call Interview": 7000
-    };
+    const {
+      transaction_id,
+      tx_ref,
+      service
+    } = data;
 
-    const expectedAmount = servicePrices[service];
-
-    if (!expectedAmount) {
-      return new Response(
-        JSON.stringify({
+    if (!transaction_id) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Invalid service selected."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Transaction ID is required"
+        })
+      };
     }
 
-    // Connect to the same Netlify Blobs store
+    if (!tx_ref) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Transaction reference is required"
+        })
+      };
+    }
+
+    if (!service || !PRICES[service]) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Invalid celebration service"
+        })
+      };
+    }
+
+    const expectedAmount = PRICES[service];
+
     const store = getStore("kulzzy-celebration-requests");
 
-    /*
-     * Retrieve the celebration request that was saved
-     * when create-payment.js created the payment.
-     */
-    const pendingRequest = await store.getJSON(
-      `pending/${txRef}`
-    );
+    const pendingRequest = await store.getJSON(`pending/${tx_ref}`);
 
     if (!pendingRequest) {
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 404,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message:
-            "The celebration request connected to this payment could not be found."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Pending request not found"
+        })
+      };
     }
 
-    // Make sure the saved service matches the payment request
+    if (pendingRequest.txRef !== tx_ref) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Transaction reference mismatch"
+        })
+      };
+    }
+
     if (pendingRequest.service !== service) {
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Payment service does not match the request."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Service mismatch"
+        })
+      };
     }
 
-    /*
-     * Verify the transaction directly with Flutterwave.
-     */
     const flutterwaveResponse = await fetch(
       `https://api.flutterwave.com/v3/transactions/${encodeURIComponent(
-        transactionId
+        transaction_id
       )}/verify`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${secretKey}`,
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
           "Content-Type": "application/json"
         }
       }
     );
 
-    const flutterwaveData = await flutterwaveResponse.json();
+    let flutterwaveData;
 
-    // Flutterwave verification request failed
-    if (!flutterwaveResponse.ok) {
-      return new Response(
-        JSON.stringify({
+    try {
+      flutterwaveData = await flutterwaveResponse.json();
+    } catch (error) {
+      return {
+        statusCode: 502,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message:
-            flutterwaveData?.message ||
-            "Unable to verify payment with Flutterwave."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Invalid response from Flutterwave"
+        })
+      };
     }
 
-    const transaction = flutterwaveData?.data;
+    if (!flutterwaveResponse.ok || !flutterwaveData) {
+      return {
+        statusCode: 502,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Unable to verify payment with Flutterwave"
+        })
+      };
+    }
+
+    const transaction = flutterwaveData.data;
 
     if (!transaction) {
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Flutterwave returned no transaction data."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Flutterwave transaction not found"
+        })
+      };
     }
 
-    /*
-     * PAYMENT STATUS CHECK
-     */
     if (transaction.status !== "successful") {
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Payment was not successful."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Payment was not successful"
+        })
+      };
     }
 
-    /*
-     * CURRENCY CHECK
-     */
     if (transaction.currency !== "NGN") {
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Invalid payment currency."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Invalid payment currency"
+        })
+      };
     }
 
-    /*
-     * AMOUNT CHECK
-     */
-    if (Number(transaction.amount) < Number(expectedAmount)) {
-      return new Response(
-        JSON.stringify({
+    if (Number(transaction.amount) < expectedAmount) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Payment amount is less than the required amount."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Payment amount is insufficient"
+        })
+      };
     }
 
-    /*
-     * TRANSACTION REFERENCE CHECK
-     */
-    if (transaction.tx_ref !== txRef) {
-      return new Response(
-        JSON.stringify({
+    if (transaction.tx_ref !== tx_ref) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Transaction reference does not match."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Flutterwave transaction reference mismatch"
+        })
+      };
     }
 
-    /*
-     * Make sure the transaction reference saved
-     * with the request is also the same reference.
-     */
-    if (pendingRequest.txRef !== txRef) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "Request transaction reference does not match."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-    }
-
-    /*
-     * EVERYTHING HAS NOW BEEN VERIFIED.
-     *
-     * Create the final celebration request record.
-     */
     const finalRequest = {
-      // Request information
       requestStatus: "PAID",
 
       service: pendingRequest.service,
-
       relationship: pendingRequest.relationship,
-
       category: pendingRequest.category,
 
       celebrantName: pendingRequest.celebrantName,
-
       celebrantPhone: pendingRequest.celebrantPhone,
 
       senderName: pendingRequest.senderName,
-
       whatsappNumber: pendingRequest.whatsappNumber,
 
       email: pendingRequest.email,
 
       writeup: pendingRequest.writeup,
-
       celebrationDate: pendingRequest.celebrationDate,
 
-      // Payment information
       paymentStatus: "PAID",
-
       paymentProcessor: "Flutterwave",
 
-      transactionId: String(
-        transaction.id || transactionId
-      ),
-
-      txRef: String(
-        transaction.tx_ref || txRef
-      ),
+      transactionId: String(transaction.id),
+      txRef: pendingRequest.txRef,
 
       amountPaid: Number(transaction.amount),
-
       currency: transaction.currency,
 
       paymentStatusFromFlutterwave: transaction.status,
 
-      paidAt:
-        transaction.created_at ||
-        transaction.completed_at ||
-        new Date().toISOString(),
-
+      paidAt: transaction.created_at || new Date().toISOString(),
       verifiedAt: new Date().toISOString(),
 
-      // Original request creation time
-      createdAt:
-        pendingRequest.createdAt ||
-        new Date().toISOString()
+      createdAt: pendingRequest.createdAt
     };
 
-    /*
-     * Save the FINAL PAID request.
-     *
-     * The transaction reference is used as the unique key.
-     * This prevents the same payment from creating multiple
-     * separate records.
-     */
-    await store.setJSON(
-      `requests/${txRef}`,
-      finalRequest
-    );
+    await store.setJSON(`requests/${tx_ref}`, finalRequest);
 
-    /*
-     * Remove the temporary pending record.
-     *
-     * The final PAID record remains.
-     */
     try {
-      await store.delete(`pending/${txRef}`);
+      await store.delete(`pending/${tx_ref}`);
     } catch (deleteError) {
       console.error(
-        "Unable to delete pending request:",
+        "Could not delete pending request:",
         deleteError
       );
     }
 
-    /*
-     * Tell the frontend that payment and request
-     * processing were successful.
-     */
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
         success: true,
-
-        message:
-          "Payment verified and celebration request saved successfully.",
-
-        transaction_id: transaction.id,
-
-        tx_ref: transaction.tx_ref,
-
-        amount: transaction.amount,
-
-        currency: transaction.currency,
-
-        service: service,
-
-        paymentStatus: "PAID"
-      }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+        message: "Payment verified successfully",
+        request: finalRequest
+      })
+    };
   } catch (error) {
-    console.error(
-      "VERIFY PAYMENT ERROR:",
-      error
-    );
+    console.error("VERIFY PAYMENT ERROR:", error);
 
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
         success: false,
-        message:
-          "An error occurred while verifying the payment."
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+        message: "Unable to verify payment"
+      })
+    };
   }
 };
