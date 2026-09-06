@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Book Your Celebration Now | Kulzzy Radio Network</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 18px 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #071a3d;
+    color: #ffffff;
+}
+
+.container {
+    width: 100%;
+    max-width: 680px;
+    margin: auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 27px;
+    font-weight: 900;
+    color: #ffd700;
+    text-transform: uppercase;
+}
+
+.header p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.form-box {
+    background: #0b2450;
+    border: 1px solid rgba(255,215,0,0.35);
+    border-radius: 18px;
+    padding: 18px;
+    color: #ffffff;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.30);
+}
+
+.section-title {
+    margin: 20px 0 13px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ffd700;
+    color: #ffd700;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.field {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.required {
+    color: #ffd700;
+}
+
+select,
+input,
+textarea {
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 9px;
+    padding: 12px;
+    font-size: 15px;
+    outline: none;
+    background: #ffffff;
+    color: #111111;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 2px rgba(255,215,0,0.15);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.hidden {
+    display: none;
+}
+
+.service-box {
+    border: 2px solid rgba(255,255,255,0.20);
+    border-radius: 11px;
+    padding: 14px;
+    margin-top: 9px;
+    cursor: pointer;
+    transition: 0.2s;
+    background: #09204a;
+}
+
+.service-box:hover {
+    border-color: #ffd700;
+}
+
+.service-box.active {
+    border-color: #ffd700;
+    background: #102d61;
+}
+
+.service-title {
+    font-weight: 800;
+    color: #ffd700;
+    font-size: 15px;
+}
+
+.service-description {
+    margin-top: 5px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #ffffff;
+    opacity: 0.85;
+}
+
+.upload-note {
+    margin-top: 5px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.70);
+}
+
+.price-display {
+    margin-top: 13px;
+    padding: 14px;
+    border-radius: 11px;
+    background: #071a3d;
+    border: 1px solid rgba(255,215,0,0.35);
+    color: #ffffff;
+    text-align: center;
+}
+
+.price-label {
+    display: block;
+    font-size: 12px;
+}
+
+.price-value {
+    display: block;
+    margin-top: 4px;
+    font-size: 24px;
+    font-weight: 900;
+    color: #ffd700;
+}
+
+.payment-box {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 11px;
+    background: #071a3d;
+    border: 1px solid rgba(255,215,0,0.35);
+}
+
+.payment-box h3 {
+    margin: 0 0 5px;
+    color: #ffd700;
+    font-size: 15px;
+}
+
+.payment-box p {
+    margin: 4px 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #ffffff;
+}
+
+.submit-btn {
+    width: 100%;
+    border: none;
+    border-radius: 11px;
+    padding: 15px;
+    margin-top: 10px;
+    background: #ffd700;
+    color: #071a3d;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #ffe44d;
+}
+
+.submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.footer-message {
+    text-align: center;
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 11px;
+    background: #0b2450;
+    border: 1px solid rgba(255,215,0,0.25);
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.footer-message strong {
+    color: #ffd700;
+}
+
+.success-message {
+    display: none;
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 11px;
+    background: #123d22;
+    border: 1px solid #55d477;
+    color: #ffffff;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.error-message {
+    display: none;
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 11px;
+    background: #48151b;
+    border: 1px solid #ff6b6b;
+    color: #ffffff;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.payment-reference {
+    word-break: break-all;
+    font-size: 12px;
+    color: #ffd700;
+}
+
+@media (max-width: 480px) {
+
+    body {
+        padding: 10px 7px;
+    }
+
+    .form-box {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    select,
+    input,
+    textarea {
+        font-size: 14px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>BOOK YOUR CELEBRATION NOW</h1>
+
+        <p>
+            Kulzzy Radio Network — Celebrating Lives Everyday
+        </p>
+
+    </div>
+
+
+    <div class="form-box">
+
+        <form id="celebrationForm">
+
+
+            <!-- RELATIONSHIP -->
+
+            <div class="field">
+
+                <label for="relationship">
+                    Who Are You Celebrating?
+                    <span class="required">*</span>
+                </label>
+
+                <select id="relationship" required>
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option>Daddy</option>
+                    <option>Mummy</option>
+                    <option>Brother</option>
+                    <option>Sister</option>
+                    <option>Child</option>
+                    <option>Husband</option>
+                    <option>Wife</option>
+                    <option>Boyfriend</option>
+                    <option>Girlfriend</option>
+                    <option>Others</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="field">
+
+                <label for="category">
+                    Celebration Category
+                    <span class="required">*</span>
+                </label>
+
+                <select id="category" required>
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option>Birthday Celebration</option>
+                    <option>Wedding Anniversary</option>
+                    <option>Child Dedication</option>
+                    <option>Achievements</option>
+                    <option>Graduation Celebration</option>
+                    <option>Others</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SERVICE -->
+
+            <div class="field">
+
+                <label>
+                    Celebration Type
+                    <span class="required">*</span>
+                </label>
+
+
+                <div
+                    class="service-box"
+                    id="announcementBox"
+                    onclick="selectService('announcement')"
+                >
+
+                    <div class="service-title">
+                        CELEBRATION ANNOUNCEMENT — ₦3,000
+                    </div>
+
+                    <div class="service-description">
+                        Live celebration announcement on Kulzzy Radio.
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="service-box"
+                    id="interviewBox"
+                    onclick="selectService('interview')"
+                >
+
+                    <div class="service-title">
+                        PHONE CALL INTERVIEW — ₦7,000
+                    </div>
+
+                    <div class="service-description">
+                        Live announcement with a phone call to the celebrant.
+                    </div>
+
+                </div>
+
+
+                <input
+                    type="hidden"
+                    id="celebrationType"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CELEBRANT -->
+
+            <h2 class="section-title">
+                Celebrant Information
+            </h2>
+
+
+            <div class="field">
+
+                <label for="pictures">
+                    Celebrant's 2 Pictures
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="pictures"
+                    accept="image/*"
+                    multiple
+                    required
+                >
+
+                <div class="upload-note">
+                    Select exactly 2 pictures.
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="celebrantName">
+                    Celebrant's Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="celebrantName"
+                    placeholder="Full name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- INTERVIEW PHONE -->
+
+            <div
+                id="interviewFields"
+                class="hidden"
+            >
+
+                <div class="field">
+
+                    <label for="celebrantPhone">
+                        Celebrant's Phone Number
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="celebrantPhone"
+                        placeholder="Phone number"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- SENDER -->
+
+            <div class="field">
+
+                <label for="senderName">
+                    Your Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="senderName"
+                    placeholder="Your name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- WHATSAPP -->
+
+            <div class="field">
+
+                <label for="whatsappNumber">
+                    Your WhatsApp Number
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    id="whatsappNumber"
+                    placeholder="WhatsApp number"
+                    required
+                >
+
+            </div>
+
+
+            <!-- WRITE UP -->
+
+            <div class="field">
+
+                <label for="writeup">
+                    Celebration Message
+                    <span class="required">*</span>
+                </label>
+
+                <textarea
+                    id="writeup"
+                    placeholder="Write your celebration message..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="field">
+
+                <label for="celebrationDate">
+                    Celebration Date
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="date"
+                    id="celebrationDate"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PAYMENT -->
+
+            <h2 class="section-title">
+                Payment
+            </h2>
+
+
+            <div class="price-display">
+
+                <span class="price-label">
+                    Selected Celebration Price
+                </span>
+
+                <span
+                    class="price-value"
+                    id="priceDisplay"
+                >
+                    Select celebration type
+                </span>
+
+            </div>
+
+
+            <div class="payment-box">
+
+                <h3>
+                    Secure Payment
+                </h3>
+
+                <p id="paymentInstruction">
+                    Select a celebration type to continue.
+                </p>
+
+            </div>
+
+
+            <!-- RECEIPT -->
+
+            <div class="field">
+
+                <label for="receipt">
+                    Payment Receipt
+                </label>
+
+                <input
+                    type="file"
+                    id="receipt"
+                    accept="image/*,.pdf"
+                >
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="submit-btn"
+                id="submitButton"
+            >
+                CONTINUE TO PAYMENT
+            </button>
+
+
+            <!-- SUCCESS -->
+
+            <div
+                class="success-message"
+                id="successMessage"
+            >
+
+                🎉 <strong>Payment Successful!</strong>
+
+                <br>
+
+                Your celebration request has been received.
+
+                <br><br>
+
+                Transaction Reference:
+
+                <br>
+
+                <span
+                    class="payment-reference"
+                    id="paymentReference"
+                ></span>
+
+                <br><br>
+
+                <strong>
+                    Kulzzy Radio Network
+                </strong>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+                class="error-message"
+                id="errorMessage"
+            ></div>
+
+        </form>
+
+    </div>
+
+
+    <div class="footer-message">
+
+        <strong>Stay Tuned!</strong>
+
+        <br>
+
+        Your celebration is coming to Kulzzy Radio.
+
+        <br>
+
+        <strong>Celebrating Lives Everyday</strong>
+
+    </div>
+
+</div>
+
+
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+
+<script>
+
+/* =========================================
+   NETLIFY FUNCTIONS
+========================================= */
+
+const CREATE_PAYMENT_URL =
+    "https://majestic-lolly-4ca71f.netlify.app/.netlify/functions/create-payment";
+
+const VERIFY_PAYMENT_URL =
+    "https://majestic-lolly-4ca71f.netlify.app/.netlify/functions/verify-payment";
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const announcementBox =
+    document.getElementById("announcementBox");
+
+const interviewBox =
+    document.getElementById("interviewBox");
+
+const celebrationType =
+    document.getElementById("celebrationType");
+
+const interviewFields =
+    document.getElementById("interviewFields");
+
+const celebrantPhone =
+    document.getElementById("celebrantPhone");
+
+const priceDisplay =
+    document.getElementById("priceDisplay");
+
+const paymentInstruction =
+    document.getElementById("paymentInstruction");
+
+const form =
+    document.getElementById("celebrationForm");
+
+const picturesInput =
+    document.getElementById("pictures");
+
+const dateInput =
+    document.getElementById("celebrationDate");
+
+const submitButton =
+    document.getElementById("submitButton");
+
+const successMessage =
+    document.getElementById("successMessage");
+
+const errorMessage =
+    document.getElementById("errorMessage");
+
+const paymentReference =
+    document.getElementById("paymentReference");
+
+
+/* =========================================
+   SELECT SERVICE
+========================================= */
+
+function selectService(type) {
+
+    announcementBox.classList.remove("active");
+
+    interviewBox.classList.remove("active");
+
+
+    if (type === "announcement") {
+
+        announcementBox.classList.add("active");
+
+        celebrationType.value =
+            "Celebration Announcement Only";
+
+        interviewFields.classList.add("hidden");
+
+        celebrantPhone.required = false;
+
+        priceDisplay.textContent =
+            "₦3,000";
+
+        paymentInstruction.textContent =
+            "Celebration Announcement — ₦3,000";
+
+    }
+
+
+    if (type === "interview") {
+
+        interviewBox.classList.add("active");
+
+        celebrationType.value =
+            "Celebration Phone Call Interview";
+
+        interviewFields.classList.remove("hidden");
+
+        celebrantPhone.required = true;
+
+        priceDisplay.textContent =
+            "₦7,000";
+
+        paymentInstruction.textContent =
+            "Phone Call Interview — ₦7,000";
+
+    }
+
+}
+
+
+/* =========================================
+   TODAY
+========================================= */
+
+const today =
+    new Date();
+
+const year =
+    today.getFullYear();
+
+const month =
+    String(today.getMonth() + 1).padStart(2, "0");
+
+const day =
+    String(today.getDate()).padStart(2, "0");
+
+dateInput.min =
+    `${year}-${month}-${day}`;
+
+
+/* =========================================
+   EXACTLY 2 PICTURES
+========================================= */
+
+picturesInput.addEventListener(
+    "change",
+    function() {
+
+        if (this.files.length !== 2) {
+
+            alert(
+                "Please select exactly 2 pictures."
+            );
+
+            this.value = "";
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+function showError(message) {
+
+    errorMessage.textContent =
+        message;
+
+    errorMessage.style.display =
+        "block";
+
+    errorMessage.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+function hideError() {
+
+    errorMessage.style.display =
+        "none";
+
+    errorMessage.textContent =
+        "";
+
+}
+
+
+/* =========================================
+   SUBMIT
+========================================= */
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        hideError();
+
+
+        if (!celebrationType.value) {
+
+            showError(
+                "Please select a celebration type."
+            );
+
+            return;
+
+        }
+
+
+        if (picturesInput.files.length !== 2) {
+
+            showError(
+                "Please upload exactly 2 pictures."
+            );
+
+            return;
+
+        }
+
+
+        const relationship =
+            document.getElementById(
+                "relationship"
+            ).value;
+
+        const category =
+            document.getElementById(
+                "category"
+            ).value;
+
+        const celebrantName =
+            document.getElementById(
+                "celebrantName"
+            ).value.trim();
+
+        const celebrantPhoneValue =
+            celebrantPhone.value.trim();
+
+        const senderName =
+            document.getElementById(
+                "senderName"
+            ).value.trim();
+
+        const whatsappNumber =
+            document.getElementById(
+                "whatsappNumber"
+            ).value.trim();
+
+        const writeup =
+            document.getElementById(
+                "writeup"
+            ).value.trim();
+
+        const celebrationDate =
+            document.getElementById(
+                "celebrationDate"
+            ).value;
+
+
+        submitButton.disabled =
+            true;
+
+        submitButton.textContent =
+            "CREATING PAYMENT...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    CREATE_PAYMENT_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            service:
+                                celebrationType.value,
+
+                            relationship:
+                                relationship,
+
+                            category:
+                                category,
+
+                            celebrantName:
+                                celebrantName,
+
+                            celebrantPhone:
+                                celebrantPhoneValue,
+
+                            senderName:
+                                senderName,
+
+                            whatsappNumber:
+                                whatsappNumber,
+
+                            writeup:
+                                writeup,
+
+                            celebrationDate:
+                                celebrationDate
+
+                        })
+
+                    }
+                );
+
+
+            const responseText =
+                await response.text();
+
+            let result;
+
+            try {
+
+                result =
+                    JSON.parse(responseText);
+
+            } catch (error) {
+
+                console.error(
+                    responseText
+                );
+
+                throw new Error(
+                    "Payment server returned an invalid response."
+                );
+
+            }
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Unable to create payment."
+                );
+
+            }
+
+
+            submitButton.textContent =
+                "OPENING PAYMENT...";
+
+
+            FlutterwaveCheckout({
+
+                public_key:
+                    result.publicKey,
+
+                tx_ref:
+                    result.tx_ref,
+
+                amount:
+                    result.amount,
+
+                currency:
+                    "NGN",
+
+                payment_options:
+                    "card,banktransfer,ussd",
+
+                customer: {
+
+                    phone_number:
+                        celebrantPhoneValue ||
+                        whatsappNumber,
+
+                    name:
+                        senderName
+
+                },
+
+                customizations: {
+
+                    title:
+                        "Kulzzy Radio Network",
+
+                    description:
+                        celebrationType.value,
+
+                    logo:
+                        "https://kulzzy.github.io/app/icon-192.png"
+
+                },
+
+
+                callback:
+                    async function(payment) {
+
+                        submitButton.textContent =
+                            "VERIFYING PAYMENT...";
+
+
+                        try {
+
+                            const verifyResponse =
+                                await fetch(
+                                    VERIFY_PAYMENT_URL,
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body: JSON.stringify({
+
+                                            transaction_id:
+                                                payment.transaction_id,
+
+                                            tx_ref:
+                                                result.tx_ref,
+
+                                            service:
+                                                celebrationType.value
+
+                                        })
+
+                                    }
+                                );
+
+
+                            const verifyText =
+                                await verifyResponse.text();
+
+                            let verifyResult;
+
+                            try {
+
+                                verifyResult =
+                                    JSON.parse(
+                                        verifyText
+                                    );
+
+                            } catch (error) {
+
+                                throw new Error(
+                                    "Payment verification returned an invalid response."
+                                );
+
+                            }
+
+
+                            if (
+                                !verifyResponse.ok ||
+                                !verifyResult.success
+                            ) {
+
+                                throw new Error(
+                                    verifyResult.message ||
+                                    "Payment verification failed."
+                                );
+
+                            }
+
+
+                            paymentReference.textContent =
+                                result.tx_ref;
+
+                            successMessage.style.display =
+                                "block";
+
+                            submitButton.disabled =
+                                true;
+
+                            submitButton.textContent =
+                                "PAYMENT VERIFIED";
+
+                            successMessage.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center"
+                            });
+
+                        }
+
+                        catch(error) {
+
+                            console.error(
+                                error
+                            );
+
+                            showError(
+                                error.message ||
+                                "Payment verification failed."
+                            );
+
+                            submitButton.disabled =
+                                false;
+
+                            submitButton.textContent =
+                                "CONTINUE TO PAYMENT";
+
+                        }
+
+                    },
+
+
+                onclose:
+                    function() {
+
+                        submitButton.disabled =
+                            false;
+
+                        submitButton.textContent =
+                            "CONTINUE TO PAYMENT";
+
+                    }
+
+            });
+
+        }
+
+        catch(error) {
+
+            console.error(
+                error
+            );
+
+            showError(
+                error.message ||
+                "Unable to create payment. Please try again."
+            );
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                "CONTINUE TO PAYMENT";
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
