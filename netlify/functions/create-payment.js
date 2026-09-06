@@ -15,7 +15,7 @@ const PRICES = {
 };
 
 exports.handler = async (event) => {
-  // Allow browser CORS preflight request
+
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 204,
@@ -36,6 +36,7 @@ exports.handler = async (event) => {
   }
 
   try {
+
     if (!process.env.FLW_SECRET_KEY) {
       return {
         statusCode: 500,
@@ -46,6 +47,7 @@ exports.handler = async (event) => {
         })
       };
     }
+
 
     let data;
 
@@ -62,6 +64,7 @@ exports.handler = async (event) => {
       };
     }
 
+
     const {
       service,
       relationship,
@@ -70,10 +73,10 @@ exports.handler = async (event) => {
       celebrantPhone,
       senderName,
       whatsappNumber,
-      email,
       writeup,
       celebrationDate
     } = data;
+
 
     if (!service || !PRICES[service]) {
       return {
@@ -86,16 +89,6 @@ exports.handler = async (event) => {
       };
     }
 
-    if (!email) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Email is required"
-        })
-      };
-    }
 
     if (!senderName) {
       return {
@@ -103,10 +96,23 @@ exports.handler = async (event) => {
         headers,
         body: JSON.stringify({
           success: false,
-          message: "Sender name is required"
+          message: "Your name is required"
         })
       };
     }
+
+
+    if (!whatsappNumber) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "WhatsApp number is required"
+        })
+      };
+    }
+
 
     if (!celebrantName) {
       return {
@@ -119,65 +125,132 @@ exports.handler = async (event) => {
       };
     }
 
-    const amount = PRICES[service];
+
+    const amount =
+      PRICES[service];
+
 
     const txRef =
       "KULZZY-" +
       Date.now() +
       "-" +
-      Math.floor(100000 + Math.random() * 900000);
+      Math.floor(
+        100000 +
+        Math.random() * 900000
+      );
 
-    const store = getStore("kulzzy-celebration-requests");
+
+    const store =
+      getStore(
+        "kulzzy-celebration-requests"
+      );
+
 
     const pendingRequest = {
-      requestStatus: "PENDING_PAYMENT",
+
+      requestStatus:
+        "PENDING_PAYMENT",
 
       txRef,
 
       service,
-      amountRequired: amount,
-      currency: "NGN",
 
-      relationship: relationship || "",
-      category: category || "",
-
-      celebrantName: celebrantName || "",
-      celebrantPhone: celebrantPhone || "",
-
-      senderName: senderName || "",
-      whatsappNumber: whatsappNumber || "",
-
-      email: email || "",
-
-      writeup: writeup || "",
-      celebrationDate: celebrationDate || "",
-
-      createdAt: new Date().toISOString()
-    };
-
-    await store.setJSON(`pending/${txRef}`, pendingRequest);
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        publicKey: process.env.FLW_PUBLIC_KEY,
-        tx_ref: txRef,
+      amountRequired:
         amount,
-        currency: "NGN"
-      })
+
+      currency:
+        "NGN",
+
+      relationship:
+        relationship || "",
+
+      category:
+        category || "",
+
+      celebrantName:
+        celebrantName || "",
+
+      celebrantPhone:
+        celebrantPhone || "",
+
+      senderName:
+        senderName || "",
+
+      whatsappNumber:
+        whatsappNumber || "",
+
+      writeup:
+        writeup || "",
+
+      celebrationDate:
+        celebrationDate || "",
+
+      createdAt:
+        new Date().toISOString()
+
     };
-  } catch (error) {
-    console.error("CREATE PAYMENT ERROR:", error);
+
+
+    await store.setJSON(
+      `pending/${txRef}`,
+      pendingRequest
+    );
+
 
     return {
-      statusCode: 500,
+
+      statusCode: 200,
+
       headers,
+
       body: JSON.stringify({
-        success: false,
-        message: "Unable to create payment"
+
+        success:
+          true,
+
+        publicKey:
+          process.env.FLW_PUBLIC_KEY,
+
+        tx_ref:
+          txRef,
+
+        amount:
+          amount,
+
+        currency:
+          "NGN"
+
       })
+
     };
+
   }
+
+  catch (error) {
+
+    console.error(
+      "CREATE PAYMENT ERROR:",
+      error
+    );
+
+    return {
+
+      statusCode: 500,
+
+      headers,
+
+      body: JSON.stringify({
+
+        success:
+          false,
+
+        message:
+          "Unable to create payment"
+
+      })
+
+    };
+
+  }
+
 };
