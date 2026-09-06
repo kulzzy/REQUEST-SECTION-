@@ -1,43 +1,66 @@
-import { getStore } from "@netlify/blobs";
+const { getStore } = require("@netlify/blobs");
 
-export default async (req) => {
-  // Only allow POST requests
-  if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({
+const ALLOWED_ORIGIN = "https://donshangti2.github.io";
+
+const headers = {
+  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Content-Type": "application/json"
+};
+
+const PRICES = {
+  "Celebration Announcement Only": 3000,
+  "Celebration Phone Call Interview": 7000
+};
+
+exports.handler = async (event) => {
+  // Allow browser CORS preflight request
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers,
+      body: ""
+    };
+  }
+
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({
         success: false,
         message: "Method not allowed"
-      }),
-      {
-        status: 405,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+      })
+    };
   }
 
   try {
-    // Check Flutterwave secret key
-    const secretKey = process.env.FLW_SECRET_KEY;
-
-    if (!secretKey) {
-      return new Response(
-        JSON.stringify({
+    if (!process.env.FLW_SECRET_KEY) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Flutterwave secret key is not configured."
-        }),
-        {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Flutterwave secret key is not configured"
+        })
+      };
     }
 
-    // Read form data sent from the website
-    const body = await req.json();
+    let data;
+
+    try {
+      data = JSON.parse(event.body || "{}");
+    } catch (error) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Invalid request data"
+        })
+      };
+    }
 
     const {
       service,
@@ -50,140 +73,111 @@ export default async (req) => {
       email,
       writeup,
       celebrationDate
-    } = body;
+    } = data;
 
-    // Prices are controlled by the server
-    const servicePrices = {
-      "Celebration Announcement Only": 3000,
-      "Celebration Phone Call Interview": 7000
-    };
-
-    const amount = servicePrices[service];
-
-    // Check service
-    if (!amount) {
-      return new Response(
-        JSON.stringify({
+    if (!service || !PRICES[service]) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Invalid service selected."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Invalid celebration service"
+        })
+      };
     }
 
-    // Required fields
-    if (!email || !senderName || !celebrantName) {
-      return new Response(
-        JSON.stringify({
+    if (!email) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
           success: false,
-          message: "Please complete the required form fields."
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+          message: "Email is required"
+        })
+      };
     }
 
-    // Generate unique Flutterwave transaction reference
+    if (!senderName) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Sender name is required"
+        })
+      };
+    }
+
+    if (!celebrantName) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: "Celebrant name is required"
+        })
+      };
+    }
+
+    const amount = PRICES[service];
+
     const txRef =
-      `KULZZY-${Date.now()}-` +
+      "KULZZY-" +
+      Date.now() +
+      "-" +
       Math.floor(100000 + Math.random() * 900000);
 
-    /*
-     * Save the customer's request temporarily.
-     *
-     * This information is saved BEFORE payment so that after
-     * Flutterwave confirms payment, verify-payment.js can find
-     * the exact request connected to this transaction reference.
-     */
     const store = getStore("kulzzy-celebration-requests");
 
     const pendingRequest = {
       requestStatus: "PENDING_PAYMENT",
 
-      txRef: txRef,
+      txRef,
 
-      service: service,
-
+      service,
       amountRequired: amount,
-
       currency: "NGN",
 
       relationship: relationship || "",
-
       category: category || "",
 
       celebrantName: celebrantName || "",
-
       celebrantPhone: celebrantPhone || "",
 
       senderName: senderName || "",
-
       whatsappNumber: whatsappNumber || "",
 
       email: email || "",
 
       writeup: writeup || "",
-
       celebrationDate: celebrationDate || "",
 
       createdAt: new Date().toISOString()
     };
 
-    /*
-     * Store the pending request using the transaction reference.
-     */
-    await store.setJSON(
-      `pending/${txRef}`,
-      pendingRequest
-    );
+    await store.setJSON(`pending/${txRef}`, pendingRequest);
 
-    /*
-     * Return only the information the frontend needs
-     * to open Flutterwave Checkout.
-     */
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
         success: true,
-
-        publicKey:
-          "FLWPUBK-5307a6454182615bb0f9ef448799d87d-X",
-
+        publicKey: process.env.FLW_PUBLIC_KEY,
         tx_ref: txRef,
-
-        amount: amount,
-
+        amount,
         currency: "NGN"
-      }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+      })
+    };
   } catch (error) {
     console.error("CREATE PAYMENT ERROR:", error);
 
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
         success: false,
-        message: "Unable to create payment."
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+        message: "Unable to create payment"
+      })
+    };
   }
 };
