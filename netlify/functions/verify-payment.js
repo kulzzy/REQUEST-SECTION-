@@ -1,6 +1,6 @@
 const { getStore } = require("@netlify/blobs");
 
-const ALLOWED_ORIGIN = "https://donshangti2.github.io";
+const ALLOWED_ORIGIN = "https://kulzzy.github.io/app/";
 
 const headers = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
