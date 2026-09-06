@@ -1,50 +1,43 @@
 const { getStore } = require("@netlify/blobs");
 
-const ALLOWED_ORIGIN = "https://kulzzy.github.io/app/";
+const ALLOWED_ORIGIN = "https://kulzzy.github.io";
 
-const headers = {
-  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Content-Type": "application/json"
-};
-
-const PRICES = {
+const SERVICES = {
   "Celebration Announcement Only": 3000,
   "Celebration Phone Call Interview": 7000
 };
 
-exports.handler = async (event) => {
-  // Allow browser CORS preflight request
+function response(statusCode, body) {
+  return {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    },
+    body: JSON.stringify(body)
+  };
+}
+
+exports.handler = async function (event) {
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers,
-      body: ""
-    };
+    return response(200, { success: true });
   }
 
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({
-        success: false,
-        message: "Method not allowed"
-      })
-    };
+    return response(405, {
+      success: false,
+      message: "Method not allowed"
+    });
   }
 
   try {
     if (!process.env.FLW_SECRET_KEY) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Flutterwave secret key is not configured"
-        })
-      };
+      return response(500, {
+        success: false,
+        message: "Flutterwave secret key is not configured."
+      });
     }
 
     let data;
@@ -52,14 +45,10 @@ exports.handler = async (event) => {
     try {
       data = JSON.parse(event.body || "{}");
     } catch (error) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Invalid request data"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Invalid request data."
+      });
     }
 
     const {
@@ -69,75 +58,54 @@ exports.handler = async (event) => {
     } = data;
 
     if (!transaction_id) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Transaction ID is required"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Transaction ID is required."
+      });
     }
 
     if (!tx_ref) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Transaction reference is required"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Transaction reference is required."
+      });
     }
 
-    if (!service || !PRICES[service]) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Invalid celebration service"
-        })
-      };
+    if (!service || !SERVICES[service]) {
+      return response(400, {
+        success: false,
+        message: "Invalid service."
+      });
     }
 
-    const expectedAmount = PRICES[service];
+    const expectedAmount = SERVICES[service];
 
-    const store = getStore("kulzzy-celebration-requests");
+    const store = getStore({
+      name: "kulzzy-celebration-requests",
+      consistency: "strong"
+    });
 
     const pendingRequest = await store.getJSON(`pending/${tx_ref}`);
 
     if (!pendingRequest) {
-      return {
-        statusCode: 404,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Pending request not found"
-        })
-      };
+      return response(404, {
+        success: false,
+        message: "Payment request not found or has expired."
+      });
     }
 
     if (pendingRequest.txRef !== tx_ref) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Transaction reference mismatch"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Transaction reference does not match."
+      });
     }
 
     if (pendingRequest.service !== service) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Service mismatch"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Payment service does not match the request."
+      });
     }
 
     const flutterwaveResponse = await fetch(
@@ -158,82 +126,59 @@ exports.handler = async (event) => {
     try {
       flutterwaveData = await flutterwaveResponse.json();
     } catch (error) {
-      return {
-        statusCode: 502,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Invalid response from Flutterwave"
-        })
-      };
+      return response(502, {
+        success: false,
+        message: "Invalid response from Flutterwave."
+      });
     }
 
-    if (!flutterwaveResponse.ok || !flutterwaveData) {
-      return {
-        statusCode: 502,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Unable to verify payment with Flutterwave"
-        })
-      };
+    if (!flutterwaveResponse.ok) {
+      console.error(
+        "FLUTTERWAVE VERIFY ERROR:",
+        JSON.stringify(flutterwaveData)
+      );
+
+      return response(400, {
+        success: false,
+        message: "Unable to verify payment with Flutterwave."
+      });
     }
 
     const transaction = flutterwaveData.data;
 
     if (!transaction) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Flutterwave transaction not found"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Flutterwave returned no transaction data."
+      });
     }
 
     if (transaction.status !== "successful") {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Payment was not successful"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Payment was not successful."
+      });
     }
 
-    if (transaction.currency !== "NGN") {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Invalid payment currency"
-        })
-      };
+    if (String(transaction.currency).toUpperCase() !== "NGN") {
+      return response(400, {
+        success: false,
+        message: "Payment currency is not NGN."
+      });
     }
 
     if (Number(transaction.amount) < expectedAmount) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Payment amount is insufficient"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "The payment amount is incorrect."
+      });
     }
 
     if (transaction.tx_ref !== tx_ref) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: "Flutterwave transaction reference mismatch"
-        })
-      };
+      return response(400, {
+        success: false,
+        message: "Flutterwave transaction reference does not match."
+      });
     }
 
     const finalRequest = {
@@ -249,8 +194,6 @@ exports.handler = async (event) => {
       senderName: pendingRequest.senderName,
       whatsappNumber: pendingRequest.whatsappNumber,
 
-      email: pendingRequest.email,
-
       writeup: pendingRequest.writeup,
       celebrationDate: pendingRequest.celebrationDate,
 
@@ -258,14 +201,18 @@ exports.handler = async (event) => {
       paymentProcessor: "Flutterwave",
 
       transactionId: String(transaction.id),
-      txRef: pendingRequest.txRef,
+      txRef: tx_ref,
 
       amountPaid: Number(transaction.amount),
       currency: transaction.currency,
 
       paymentStatusFromFlutterwave: transaction.status,
 
-      paidAt: transaction.created_at || new Date().toISOString(),
+      paidAt:
+        transaction.created_at ||
+        transaction.paid_at ||
+        new Date().toISOString(),
+
       verifiedAt: new Date().toISOString(),
 
       createdAt: pendingRequest.createdAt
@@ -277,30 +224,22 @@ exports.handler = async (event) => {
       await store.delete(`pending/${tx_ref}`);
     } catch (deleteError) {
       console.error(
-        "Could not delete pending request:",
+        "PENDING REQUEST DELETE ERROR:",
         deleteError
       );
     }
 
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        message: "Payment verified successfully",
-        request: finalRequest
-      })
-    };
+    return response(200, {
+      success: true,
+      message: "Payment verified successfully.",
+      request: finalRequest
+    });
   } catch (error) {
     console.error("VERIFY PAYMENT ERROR:", error);
 
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({
-        success: false,
-        message: "Unable to verify payment"
-      })
-    };
+    return response(500, {
+      success: false,
+      message: "Unable to verify payment."
+    });
   }
 };
