@@ -776,6 +776,17 @@ textarea {
 <script>
 
 /* =========================================
+   NETLIFY FUNCTIONS
+========================================= */
+
+const CREATE_PAYMENT_URL =
+    "https://majestic-lolly-4ca71f.netlify.app/.netlify/functions/create-payment";
+
+const VERIFY_PAYMENT_URL =
+    "https://majestic-lolly-4ca71f.netlify.app/.netlify/functions/verify-payment";
+
+
+/* =========================================
    ELEMENTS
 ========================================= */
 
@@ -1067,18 +1078,11 @@ form.addEventListener(
 
             /*
              * SEND PAYMENT REQUEST TO NETLIFY
-             *
-             * The amount is NOT sent from the browser.
-             *
-             * The server decides:
-             *
-             * Announcement = ₦3,000
-             * Interview = ₦7,000
              */
 
             const response =
                 await fetch(
-                    "/.netlify/functions/create-payment",
+                    CREATE_PAYMENT_URL,
                     {
                         method: "POST",
 
@@ -1125,8 +1129,31 @@ form.addEventListener(
                 );
 
 
-            const result =
-                await response.json();
+            /*
+             * Make sure the response is actually JSON
+             */
+            const responseText =
+                await response.text();
+
+            let result;
+
+            try {
+
+                result =
+                    JSON.parse(responseText);
+
+            } catch (jsonError) {
+
+                console.error(
+                    "Non-JSON response from create-payment:",
+                    responseText
+                );
+
+                throw new Error(
+                    "The payment server returned an invalid response. Please try again."
+                );
+
+            }
 
 
             if (
@@ -1209,7 +1236,7 @@ form.addEventListener(
 
                             const verifyResponse =
                                 await fetch(
-                                    "/.netlify/functions/verify-payment",
+                                    VERIFY_PAYMENT_URL,
                                     {
                                         method: "POST",
 
@@ -1235,8 +1262,33 @@ form.addEventListener(
                                 );
 
 
-                            const verifyResult =
-                                await verifyResponse.json();
+                            /*
+                             * Make sure verification
+                             * response is JSON
+                             */
+
+                            const verifyText =
+                                await verifyResponse.text();
+
+                            let verifyResult;
+
+                            try {
+
+                                verifyResult =
+                                    JSON.parse(verifyText);
+
+                            } catch (jsonError) {
+
+                                console.error(
+                                    "Non-JSON response from verify-payment:",
+                                    verifyText
+                                );
+
+                                throw new Error(
+                                    "The payment verification server returned an invalid response."
+                                );
+
+                            }
 
 
                             if (
